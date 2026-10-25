@@ -31,6 +31,7 @@ Englisch zuerst, Deutsch jeweils darunter. Grundlage: Spezifikation Abschnitt 14
 6. If a package becomes too large: stop at a clean point with a commit, leave the box unticked, note in `STAND.md` exactly where the next run continues.
 7. A run never: builds beyond a hold point, builds more than one package, creates a release, tag or version 1.0, changes the private repository `civ-werkstatt`, puts manufacturer documents, excerpts from them, recordings, credentials or local paths into this repository.
 8. `civ-werkstatt` may be read as reference (e.g. Reference Guides for device profiles), never written. Nothing is copied from it; profiles use own wording and source references as text only (title, edition, page, no link).
+9. The UI follows `docs/ui-draft/` for layout and interaction; the specification takes precedence (see `docs/ui-draft/README.md`).
 
 **DE**
 
@@ -42,6 +43,7 @@ Englisch zuerst, Deutsch jeweils darunter. Grundlage: Spezifikation Abschnitt 14
 6. Wird ein Paket zu groß: an sauberer Stelle mit Commit enden, Kästchen offen lassen, in `STAND.md` genau festhalten, wo der nächste Lauf weitermacht.
 7. Ein Lauf tut nie: über einen Haltepunkt hinausbauen, mehr als ein Paket bauen, ein Release, einen Tag oder Version 1.0 erstellen, das private Repo `civ-werkstatt` ändern, Herstellerunterlagen, Auszüge daraus, Mitschnitte, Zugangsdaten oder lokale Pfade in dieses Repo bringen.
 8. `civ-werkstatt` darf als Referenz gelesen werden (z. B. Reference Guides für Geräteprofile), nie beschrieben. Daraus wird nichts kopiert; Profile verwenden eigene Formulierungen und Quellenangaben nur als Text (Titel, Ausgabe, Seite, ohne Link).
+9. Die Oberfläche folgt bei Anordnung und Bedienlogik `docs/ui-draft/`; die Spezifikation hat Vorrang (siehe `docs/ui-draft/README.md`).
 
 ## Packages and hold points / Pakete und Haltepunkte
 
@@ -64,6 +66,7 @@ Week numbers count build weeks from the start, without waiting times. / Wochen a
   Adapter-Selbsttest, Messunsicherheit
 - [ ] **P06** – Bus monitor in the UI, recording
   Busmonitor in der Oberfläche, Mitschnitt
+  UI per / Gestaltung nach `docs/ui-draft/` (Lauf.dc.html)
 - [ ] **⏸ H1** – Intermediate test with the Pico (approx. 15 min) — waits for the user's report
   Zwischentest mit dem Pico (ca. 15 min) — wartet auf Rückmeldung des Anwenders
 
@@ -91,6 +94,7 @@ Week numbers count build weeks from the start, without waiting times. / Wochen a
   Ablauf-Engine: Schleifen, Unterabläufe, Hintergrund, Aufräumblock
 - [ ] **P14** – Sequence editor (UI)
   Ablauf-Editor (Oberfläche)
+  UI per / Gestaltung nach `docs/ui-draft/` (Main.dc.html, Katalog.dc.html)
 - [ ] **P15** – Transmit lock, release, emergency stop, watchdogs
   Sendersperre, Freigabe, Not-Aus, Wächter
 
@@ -109,8 +113,10 @@ Week numbers count build weeks from the start, without waiting times. / Wochen a
 
 - [ ] **P19** – Simulator and fault injection
   Simulator und Fehlerinjektion
+  UI per / Gestaltung nach `docs/ui-draft/` (Simulator.dc.html)
 - [ ] **P20** – Capacity test
   Kapazitätstest
+  UI per / Gestaltung nach `docs/ui-draft/` (Kapazitaet.dc.html)
 - [ ] **P21** – Conformance test
   Konformitätstest
 

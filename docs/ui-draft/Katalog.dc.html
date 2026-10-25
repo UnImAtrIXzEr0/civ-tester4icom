@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Gerätekatalog</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#1D4ED8}a:hover{color:#1E3A8A}
+</style>
+</helmet>
+<div style="min-height: 900px; display: flex; flex-direction: column; background: #E5E7EB; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 13px; color: #1F2937">
+
+<div style="display: flex; align-items: center; gap: 12px; padding: 6px 12px; background: #1F2937; color: #F9FAFB; flex-wrap: wrap">
+<span style="font-weight: 600">civ-tester4icom 0.1 – Gerätekatalog</span>
+</div>
+
+<div style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: #FFFFFF; border-bottom: 1px solid #D1D5DB; flex-wrap: wrap">
+<label style="display: flex; align-items: center; gap: 6px">Suche
+<input value="Frequenz" style="min-height: 34px; width: 240px; padding: 0 8px; border: 1px solid #9CA3AF; border-radius: 4px; font: inherit"></label>
+<label style="display: flex; align-items: center; gap: 6px"><input type="checkbox" checked> nur Basisbefehle + Gerät</label>
+<label style="display: flex; align-items: center; gap: 6px"><input type="checkbox" checked> sendeauslösende markieren</label>
+<button style="margin-left: auto; min-height: 34px; padding: 0 12px; border: 1px solid #1D4ED8; color: #1D4ED8; background: #FFFFFF; border-radius: 4px; font: inherit">Eigenen Befehl anlegen</button>
+<button style="min-height: 34px; padding: 0 12px; border: 1px solid #1D4ED8; background: #1D4ED8; color: #FFFFFF; border-radius: 4px; font: inherit; font-weight: 600">In Ablauf übernehmen</button>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 8px; padding: 8px; flex: 1 1 auto">
+
+<div style="flex: 1 1 240px; max-width: 100%; background: #FFFFFF; border: 1px solid #D1D5DB; border-radius: 4px; padding: 10px; display: flex; flex-direction: column; gap: 3px">
+<div style="font-weight: 600; margin-bottom: 4px">Geräte</div>
+<sc-for list="{{groups}}" as="g" hint-placeholder-count="4">
+<div style="color: #4B5563; font-size: 12px; margin-top: 8px">{{g.name}}</div>
+<sc-for list="{{g.items}}" as="d" hint-placeholder-count="3">
+<div style="{{d.style}}"><span>{{d.name}}</span><span style="font-family: 'IBM Plex Mono', monospace; color: #4B5563">{{d.adr}}</span></div>
+</sc-for>
+</sc-for>
+<div style="margin-top: 10px; padding: 8px; background: #F3F4F6; border-radius: 4px; color: #374151">Profile sind eigene YAML-Dateien. Neue Geräte = neue Datei, kein Programm-Update nötig.</div>
+</div>
+
+<div style="flex: 999 1 560px; min-width: 0; background: #FFFFFF; border: 1px solid #D1D5DB; border-radius: 4px; display: flex; flex-direction: column">
+<div style="display: flex; gap: 10px; padding: 8px 10px; border-bottom: 1px solid #E5E7EB; flex-wrap: wrap; align-items: baseline">
+<strong>IC-7610 · Werksadresse 98h · Klasse Transceiver</strong>
+<span style="color: #4B5563">Baudraten 4800–115200 · Präambel für Einschalten je Baudrate im Profil</span>
+</div>
+<div style="overflow-x: auto">
+<table style="width: 100%; border-collapse: collapse; min-width: 640px">
+<thead>
+<tr style="background: #F3F4F6; text-align: left">
+<th style="padding: 6px 8px; font-weight: 600">Befehl</th>
+<th style="padding: 6px 8px; font-weight: 600">Sub</th>
+<th style="padding: 6px 8px; font-weight: 600">Datenformat</th>
+<th style="padding: 6px 8px; font-weight: 600">Bedeutung (eigene Worte)</th>
+<th style="padding: 6px 8px; font-weight: 600">Herkunft</th>
+</tr>
+</thead>
+<tbody>
+<sc-for list="{{cmds}}" as="c" hint-placeholder-count="12">
+<tr style="{{c.rowStyle}}">
+<td style="padding: 6px 8px; border-top: 1px solid #E5E7EB; font-family: 'IBM Plex Mono', monospace">{{c.cmd}}</td>
+<td style="padding: 6px 8px; border-top: 1px solid #E5E7EB; font-family: 'IBM Plex Mono', monospace">{{c.sub}}</td>
+<td style="padding: 6px 8px; border-top: 1px solid #E5E7EB">{{c.fmt}}</td>
+<td style="padding: 6px 8px; border-top: 1px solid #E5E7EB">{{c.txt}} <span style="{{c.flagStyle}}">{{c.flag}}</span></td>
+<td style="padding: 6px 8px; border-top: 1px solid #E5E7EB; color: #4B5563">{{c.src}}</td>
+</tr>
+</sc-for>
+</tbody>
+</table>
+</div>
+</div>
+
+<div style="flex: 1 1 320px; max-width: 100%; background: #FFFFFF; border: 1px solid #D1D5DB; border-radius: 4px; padding: 10px; display: flex; flex-direction: column; gap: 10px">
+<div style="font-weight: 600">Befehl 05 · Frequenz setzen</div>
+<label style="display: flex; flex-direction: column; gap: 3px">Wert eingeben
+<input value="14,074 000 MHz" style="min-height: 32px; padding: 0 8px; border: 1px solid #9CA3AF; border-radius: 4px; font: inherit"></label>
+<div style="display: flex; flex-direction: column; gap: 3px">
+<span>Ergebnis-Rahmen</span>
+<code style="padding: 8px; background: #F3F4F6; border-radius: 4px; font-family: 'IBM Plex Mono', monospace">FE FE 98 E0 05 00 40 07 14 00 FD</code>
+</div>
+<div style="display: flex; flex-direction: column; gap: 3px">
+<span>Erwartete Antworten</span>
+<code style="padding: 8px; background: #F3F4F6; border-radius: 4px; font-family: 'IBM Plex Mono', monospace">FB = OK · FA = NG</code>
+</div>
+<div style="border-top: 1px solid #E5E7EB; padding-top: 8px; font-weight: 600">Dekoder (Rohbytes → Wert)</div>
+<label style="display: flex; flex-direction: column; gap: 3px">Rohbytes
+<input value="FE FE E0 98 03 00 40 07 14 00 FD" style="min-height: 32px; padding: 0 8px; border: 1px solid #9CA3AF; border-radius: 4px; font-family: 'IBM Plex Mono', monospace"></label>
+<div style="padding: 8px; background: #DCFCE7; color: #14532D; border-radius: 4px">Antwort von 98h an E0h · Befehl 03 · Frequenz 14,074 000 MHz (BCD, 5 Byte)</div>
+<div style="border-top: 1px solid #E5E7EB; padding-top: 8px; color: #374151">Quellenangabe in der veröffentlichten Version nur als Text: Dokumenttitel und Ausgabe, kein Auszug, kein Link.</div>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+var item = 'display: flex; justify-content: space-between; padding: 4px 6px; border-radius: 3px';
+var sel = item + '; background: #DBEAFE; font-weight: 500';
+function d(name, adr, s) { return { name: name, adr: adr, style: s ? sel : item }; }
+var src = 'IC-7610 CI-V Reference Guide (2025)';
+var cmds = [
+{ cmd: '00', sub: '–', fmt: 'Frequenz BCD 5 B', txt: 'Frequenz melden (Transceive-Rundruf)', src: 'Basis' },
+{ cmd: '03', sub: '–', fmt: '– / Frequenz', txt: 'Betriebsfrequenz lesen', src: 'Basis' },
+{ cmd: '04', sub: '–', fmt: '– / Modus+Filter', txt: 'Betriebsart lesen', src: 'Basis' },
+{ cmd: '05', sub: '–', fmt: 'Frequenz BCD 5 B', txt: 'Betriebsfrequenz setzen', src: 'Basis', sel: true },
+{ cmd: '0F', sub: '–', fmt: 'Byte', txt: 'Split / Duplex lesen oder setzen', src: src },
+{ cmd: '12', sub: '00/01', fmt: 'RX-ANT 00/01', txt: 'Antenne ANT1 / ANT2 wählen oder lesen', src: src },
+{ cmd: '15', sub: '02', fmt: 'Pegel 0000–0255', txt: 'S-Meter lesen', src: src },
+{ cmd: '18', sub: '00/01', fmt: '–', txt: 'Gerät aus / ein (Präambel!)', src: src },
+{ cmd: '19', sub: '00', fmt: '– / Adresse', txt: 'Geräte-ID lesen', src: 'Basis' },
+{ cmd: '1C', sub: '00', fmt: '00/01', txt: 'Senden / Empfangen', src: src, tx: true },
+{ cmd: '1C', sub: '01', fmt: '00/01/02', txt: 'Tuner aus / ein / abstimmen', src: src, tx: true },
+{ cmd: '1C', sub: '03', fmt: 'Frequenz BCD 5 B', txt: 'Sendefrequenz lesen', src: src }
+];
+return {
+groups: [
+{ name: 'BASIS', items: [d('Gemeinsamer Befehlssatz', '–', false)] },
+{ name: 'TRANSCEIVER', items: [d('IC-7610', '98h', true), d('IC-7300MK2', 'B6h'), d('IC-7760', 'B2h'), d('IC-9700', 'A2h')] },
+{ name: 'EMPFÄNGER', items: [d('IC-R15', 'B0h')] },
+{ name: 'ENDSTUFEN / ZUBEHÖR', items: [d('IC-PW2', 'AAh')] },
+{ name: 'EIGENE', items: [d('Eigener Befehlssatz', 'frei')] }
+],
+cmds: cmds.map(function (c) {
+return Object.assign({}, c, {
+rowStyle: c.sel ? 'background: #EFF6FF; outline: 2px solid #1D4ED8; outline-offset: -2px' : '',
+flag: c.tx ? 'löst HF aus' : '',
+flagStyle: c.tx ? 'margin-left: 6px; padding: 1px 6px; border-radius: 3px; background: #FEE2E2; color: #7F1D1D; font-size: 12px; font-weight: 500' : 'display: none'
+});
+})
+};
+}
+}
+</script>
+</body>
+</html>

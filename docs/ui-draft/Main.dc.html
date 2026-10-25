@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Ablauf-Editor</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#1D4ED8}a:hover{color:#1E3A8A}
+</style>
+</helmet>
+<div style="min-height: 900px; display: flex; flex-direction: column; background: #E5E7EB; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 13px; color: #1F2937">
+
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 6px 12px; background: #1F2937; color: #F9FAFB; flex-wrap: wrap">
+<span style="font-weight: 600">civ-tester4icom 0.1 – Ablauf: Startabfrage.civseq</span>
+<span style="color: #D1D5DB">Windows / Linux · Qt 6</span>
+</div>
+
+<div style="display: flex; gap: 18px; padding: 4px 12px; background: #F9FAFB; border-bottom: 1px solid #D1D5DB; flex-wrap: wrap">
+<span>Datei</span><span>Bearbeiten</span><span>Ablauf</span><span>Bus</span><span>Katalog</span><span>Simulator</span><span>Ansicht</span><span>Hilfe</span>
+</div>
+
+<div style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: #FFFFFF; border-bottom: 1px solid #D1D5DB; flex-wrap: wrap">
+<button style="min-height: 36px; padding: 0 14px; border: 1px solid #15803D; background: #15803D; color: #FFFFFF; border-radius: 4px; font: inherit; font-weight: 600">▶ Starten</button>
+<button style="min-height: 36px; padding: 0 14px; border: 1px solid #9CA3AF; background: #FFFFFF; border-radius: 4px; font: inherit">Einzelschritt</button>
+<button style="min-height: 36px; padding: 0 14px; border: 1px solid #9CA3AF; background: #FFFFFF; border-radius: 4px; font: inherit">■ Stopp (räumt auf)</button>
+<span style="width: 1px; height: 28px; background: #D1D5DB"></span>
+<span style="display: inline-flex; gap: 6px; align-items: center; padding: 6px 10px; border: 1px solid #D1D5DB; border-radius: 4px; background: #F9FAFB">
+<strong>Port A</strong> COM5 · Bus-Adapter (FTDI) · 19200 Bd · Echo ✓ · Rolle: Master</span>
+<span style="display: inline-flex; gap: 6px; align-items: center; padding: 6px 10px; border: 1px solid #D1D5DB; border-radius: 4px; background: #F9FAFB">
+<strong>Port B</strong> COM7 · Radio-USB · kein Echo · Rolle: Mithören</span>
+<span style="margin-left: auto; padding: 6px 10px; border-radius: 4px; background: #DBEAFE; color: #1E3A8A; font-weight: 500">Messunsicherheit U (k=2): ±1,1 ms · gemessen 17:41</span>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 8px; padding: 8px; flex: 1 1 auto">
+
+<div style="flex: 1 1 220px; max-width: 100%; background: #FFFFFF; border: 1px solid #D1D5DB; border-radius: 4px; padding: 10px; display: flex; flex-direction: column; gap: 4px">
+<div style="font-weight: 600; margin-bottom: 4px">Projekt</div>
+<div style="color: #4B5563; font-size: 12px; margin-top: 6px">ABLÄUFE</div>
+<div style="padding: 4px 6px">Grundfunktionen IC-7610</div>
+<div style="padding: 4px 6px; background: #DBEAFE; border-radius: 3px; font-weight: 500">Startabfrage</div>
+<div style="padding: 4px 6px">Bus-Kapazität (mitgeliefert)</div>
+<div style="padding: 4px 6px">Antennenumschaltung ANT1/ANT2</div>
+<div style="color: #4B5563; font-size: 12px; margin-top: 8px">UNTERABLÄUFE</div>
+<div style="padding: 4px 6px">Zustand sichern</div>
+<div style="padding: 4px 6px">Zustand wiederherstellen</div>
+<div style="color: #4B5563; font-size: 12px; margin-top: 8px">GERÄTEPROFILE</div>
+<div style="padding: 4px 6px">IC-7610 · 98h</div>
+<div style="padding: 4px 6px">IC-7300MK2 · B6h</div>
+<div style="padding: 4px 6px">Eigener Befehlssatz</div>
+<div style="color: #4B5563; font-size: 12px; margin-top: 8px">VARIABLEN</div>
+<div style="padding: 4px 6px; font-family: 'IBM Plex Mono', monospace; font-size: 12px">$radio = 98h<br>$ctrl = E0h<br>$f0 = (aus Schritt 4)</div>
+</div>
+
+<div style="flex: 999 1 560px; min-width: 0; background: #FFFFFF; border: 1px solid #D1D5DB; border-radius: 4px; display: flex; flex-direction: column">
+<div style="display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-bottom: 1px solid #E5E7EB; flex-wrap: wrap">
+<strong>Ablaufschritte</strong>
+<span style="color: #4B5563">Ziehen zum Umsortieren · Doppelklick zum Bearbeiten</span>
+<button style="margin-left: auto; min-height: 32px; padding: 0 10px; border: 1px solid #1D4ED8; color: #1D4ED8; background: #FFFFFF; border-radius: 4px; font: inherit">+ Schritt</button>
+<button style="min-height: 32px; padding: 0 10px; border: 1px solid #1D4ED8; color: #1D4ED8; background: #FFFFFF; border-radius: 4px; font: inherit">+ aus Katalog</button>
+</div>
+<div style="overflow-x: auto">
+<table style="width: 100%; border-collapse: collapse; min-width: 640px">
+<thead>
+<tr style="background: #F3F4F6; text-align: left">
+<th style="padding: 6px 8px; font-weight: 600; width: 32px">#</th>
+<th style="padding: 6px 8px; font-weight: 600">Typ</th>
+<th style="padding: 6px 8px; font-weight: 600">Inhalt</th>
+<th style="padding: 6px 8px; font-weight: 600">Adressen</th>
+<th style="padding: 6px 8px; font-weight: 600">Zeitfenster</th>
+</tr>
+</thead>
+<tbody>
+<sc-for list="{{steps}}" as="s" hint-placeholder-count="12">
+<tr style="{{s.rowStyle}}">
+<td style="padding: 6px 8px; color: #4B5563; border-top: 1px solid #E5E7EB">{{s.nr}}</td>
+<td style="padding: 6px 8px; border-top: 1px solid #E5E7EB"><span style="{{s.typeStyle}}">{{s.typ}}</span></td>
+<td style="padding: 6px 8px; border-top: 1px solid #E5E7EB; font-family: 'IBM Plex Mono', monospace; font-size: 12px">{{s.inhalt}}</td>
+<td style="padding: 6px 8px; border-top: 1px solid #E5E7EB; font-family: 'IBM Plex Mono', monospace; font-size: 12px">{{s.adr}}</td>
+<td style="padding: 6px 8px; border-top: 1px solid #E5E7EB">{{s.zeit}}</td>
+</tr>
+</sc-for>
+</tbody>
+</table>
+</div>
+</div>
+
+<div style="flex: 1 1 300px; max-width: 100%; background: #FFFFFF; border: 1px solid #D1D5DB; border-radius: 4px; padding: 10px; display: flex; flex-direction: column; gap: 10px">
+<div style="font-weight: 600">Eigenschaften · Schritt 7 „Erwarten“</div>
+<label style="display: flex; flex-direction: column; gap: 3px">Erwarteter Rahmen (Muster, ?? = beliebig)
+<input value="FE FE E0 98 FB FD" style="min-height: 32px; padding: 0 8px; border: 1px solid #9CA3AF; border-radius: 4px; font-family: 'IBM Plex Mono', monospace"></label>
+<div style="padding: 6px 8px; background: #F3F4F6; border-radius: 4px">Dekodiert: OK-Meldung (FB) von IC-7610 an Controller</div>
+<div style="display: flex; gap: 8px">
+<label style="flex: 1; display: flex; flex-direction: column; gap: 3px">Antwort frühestens
+<input value="0 ms" style="min-height: 32px; padding: 0 8px; border: 1px solid #9CA3AF; border-radius: 4px; font: inherit"></label>
+<label style="flex: 1; display: flex; flex-direction: column; gap: 3px">spätestens
+<input value="30 ms" style="min-height: 32px; padding: 0 8px; border: 1px solid #9CA3AF; border-radius: 4px; font: inherit"></label>
+</div>
+<label style="display: flex; flex-direction: column; gap: 3px">Fremde Rahmen im Fenster
+<select style="min-height: 32px; border: 1px solid #9CA3AF; border-radius: 4px; font: inherit"><option>ignorieren, aber zählen</option><option>als Fehler werten</option></select></label>
+<label style="display: flex; flex-direction: column; gap: 3px">Bei Fehlschlag
+<select style="min-height: 32px; border: 1px solid #9CA3AF; border-radius: 4px; font: inherit"><option>2× wiederholen, dann Fehler</option><option>Ablauf abbrechen (Aufräumen läuft)</option><option>weiter, nur protokollieren</option></select></label>
+<div style="border-top: 1px solid #E5E7EB; padding-top: 8px; font-weight: 600">Senden (gilt für Schritt 6)</div>
+<div style="display: flex; gap: 8px">
+<label style="flex: 1; display: flex; flex-direction: column; gap: 3px">Bus frei seit
+<input value="5 ms" style="min-height: 32px; padding: 0 8px; border: 1px solid #9CA3AF; border-radius: 4px; font: inherit"></label>
+<label style="flex: 1; display: flex; flex-direction: column; gap: 3px">Byte-Abstand
+<input value="0 ms" style="min-height: 32px; padding: 0 8px; border: 1px solid #9CA3AF; border-radius: 4px; font: inherit"></label>
+</div>
+<label style="display: flex; flex-direction: column; gap: 3px">Bei Kollision (Echo ≠ gesendet)
+<select style="min-height: 32px; border: 1px solid #9CA3AF; border-radius: 4px; font: inherit"><option>Jammer FC senden, Backoff 10–40 ms, max. 3×</option><option>sofort abbrechen</option></select></label>
+<div style="padding: 8px; border: 1px solid #B45309; color: #92400E; border-radius: 4px; background: #FFFBEB">Hinweis: Fenster 30 ms ist größer als U (±1,1 ms) – Ergebnis auflösbar.</div>
+</div>
+</div>
+
+<div style="margin: 0 8px 8px; background: #FFFFFF; border: 1px solid #D1D5DB; border-radius: 4px">
+<div style="display: flex; gap: 12px; padding: 6px 10px; border-bottom: 1px solid #E5E7EB; flex-wrap: wrap">
+<strong>Busmonitor (Kurzansicht)</strong><span style="color: #4B5563">vollständig in Fenster 3</span>
+</div>
+<div style="overflow-x: auto; font-family: 'IBM Plex Mono', monospace; font-size: 12px">
+<sc-for list="{{log}}" as="l" hint-placeholder-count="4">
+<div style="display: flex; gap: 16px; padding: 3px 10px; white-space: nowrap; border-top: 1px solid #F3F4F6">
+<span style="width: 110px">{{l.t}}</span><span style="width: 90px">{{l.dir}}</span><span style="width: 300px">{{l.raw}}</span><span>{{l.dec}}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div style="display: flex; gap: 16px; padding: 4px 12px; background: #F9FAFB; border-top: 1px solid #D1D5DB; color: #374151; flex-wrap: wrap">
+<span>Bereit</span><span>Durchlauf 0/100</span><span>Kollisionen 0</span><span>Fremde Rahmen 0</span><span>Aufräumblock: aktiv</span>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+var base = 'padding: 2px 6px; border-radius: 3px; font-size: 12px; font-weight: 500; ';
+var t = {
+send: base + 'background: #DBEAFE; color: #1E3A8A',
+exp: base + 'background: #DCFCE7; color: #14532D',
+flow: base + 'background: #F3F4F6; color: #374151',
+tx: base + 'background: #FEE2E2; color: #7F1D1D',
+fin: base + 'background: #FEF3C7; color: #78350F'
+};
+var steps = [
+{ nr: '1', typ: 'Selbsttest', k: 'flow', inhalt: 'Adapter-Selbsttest, 500 Bytes, Echo-Latenz', adr: 'Port A', zeit: '–' },
+{ nr: '2', typ: 'Unterablauf', k: 'flow', inhalt: 'Zustand sichern (03, 04, 12 00)', adr: '$radio', zeit: '–' },
+{ nr: '3', typ: 'Senden', k: 'send', inhalt: '03  Frequenz lesen', adr: 'E0 → 98', zeit: 'Bus frei ≥ 5 ms' },
+{ nr: '4', typ: 'Erwarten', k: 'exp', inhalt: '03 <Freq> → speichern in $f0', adr: '98 → E0', zeit: '5–50 ms' },
+{ nr: '5', typ: 'Schleife', k: 'flow', inhalt: '100× wiederholen', adr: '', zeit: '' },
+{ nr: '6', typ: 'Senden', k: 'send', inhalt: '  05  Frequenz setzen 14,074 000 MHz', adr: 'E0 → 98', zeit: 'Bus frei ≥ 5 ms' },
+{ nr: '7', typ: 'Erwarten', k: 'exp', inhalt: '  FB  OK', adr: '98 → E0', zeit: '0–30 ms', sel: true },
+{ nr: '8', typ: 'Erwarten', k: 'exp', inhalt: '  00 <Freq> Transceive-Rundruf', adr: '98 → 00', zeit: '0–300 ms' },
+{ nr: '9', typ: 'Warten', k: 'flow', inhalt: '  Intervall 200 ms', adr: '', zeit: '200 ms' },
+{ nr: '10', typ: 'Schleife Ende', k: 'flow', inhalt: '', adr: '', zeit: '' },
+{ nr: '11', typ: 'Bediener', k: 'flow', inhalt: '„Bitte VFO am Radio drehen“ → bestätigen', adr: '', zeit: 'max. 60 s' },
+{ nr: 'F', typ: 'Aufräumen', k: 'fin', inhalt: 'Zustand wiederherstellen – läuft immer, auch bei Abbruch', adr: '$radio', zeit: '–' }
+];
+return {
+steps: steps.map(function (s) {
+return Object.assign({}, s, {
+typeStyle: t[s.k],
+rowStyle: s.sel ? 'background: #EFF6FF; outline: 2px solid #1D4ED8; outline-offset: -2px' : ''
+});
+}),
+log: [
+{ t: '17:41:02.118', dir: 'A → Bus', raw: 'FE FE 98 E0 03 FD', dec: 'Frequenz lesen' },
+{ t: '17:41:02.131', dir: 'Bus → A', raw: 'FE FE E0 98 03 00 40 07 14 00 FD', dec: '14,074 000 MHz · Latenz 13 ms ±1,1' },
+{ t: '17:41:02.240', dir: 'Bus → A', raw: 'FE FE E1 98 15 02 01 20 FD', dec: 'fremd: S-Meter an E1h (gezählt)' }
+]
+};
+}
+}
+</script>
+</body>
+</html>

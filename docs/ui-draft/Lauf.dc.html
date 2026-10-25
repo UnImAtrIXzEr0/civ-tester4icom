@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Lauf und Busmonitor</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#1D4ED8}a:hover{color:#1E3A8A}
+</style>
+</helmet>
+<div style="min-height: 900px; display: flex; flex-direction: column; background: #E5E7EB; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 13px; color: #1F2937">
+
+<div style="display: flex; align-items: center; gap: 12px; padding: 6px 12px; background: #1F2937; color: #F9FAFB; flex-wrap: wrap">
+<span style="font-weight: 600">civ-tester4icom 0.1 – Lauf: Startabfrage</span>
+</div>
+
+<div style="display: flex; align-items: center; gap: 12px; padding: 8px 12px; background: #FFFFFF; border-bottom: 1px solid #D1D5DB; flex-wrap: wrap">
+<button style="min-height: 36px; padding: 0 14px; border: 1px solid #B91C1C; background: #B91C1C; color: #FFFFFF; border-radius: 4px; font: inherit; font-weight: 600">■ Stopp (räumt auf)</button>
+<div style="flex: 1 1 300px; display: flex; flex-direction: column; gap: 4px">
+<div style="display: flex; justify-content: space-between"><span>Durchlauf 37 von 100 · Schritt 8 „Erwarten Rundruf“</span><span>Laufzeit 00:01:12 · Rest ca. 00:02:03</span></div>
+<div style="height: 8px; background: #E5E7EB; border-radius: 4px"><div style="width: 37%; height: 8px; background: #1D4ED8; border-radius: 4px"></div></div>
+</div>
+<button style="min-height: 36px; padding: 0 12px; border: 1px solid #9CA3AF; background: #FFFFFF; border-radius: 4px; font: inherit">Mitschnitt speichern</button>
+<button style="min-height: 36px; padding: 0 12px; border: 1px solid #9CA3AF; background: #FFFFFF; border-radius: 4px; font: inherit">Bericht (HTML/PDF/CSV)</button>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 8px; padding: 8px">
+<sc-for list="{{tiles}}" as="k" hint-placeholder-count="6">
+<div style="background: #FFFFFF; border: 1px solid #D1D5DB; border-radius: 4px; padding: 10px; display: flex; flex-direction: column; gap: 2px">
+<span style="color: #4B5563">{{k.label}}</span>
+<span style="font-size: 22px; font-weight: 600; color: {{k.color}}">{{k.value}}</span>
+<span style="color: #4B5563; font-size: 12px">{{k.sub}}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 8px; padding: 0 8px 8px">
+
+<div style="flex: 2 1 420px; min-width: 0; background: #FFFFFF; border: 1px solid #D1D5DB; border-radius: 4px; padding: 10px; display: flex; flex-direction: column; gap: 8px">
+<strong>Antwortlatenz Schritt 7 (FB), Histogramm</strong>
+<div style="display: flex; align-items: flex-end; gap: 4px; height: 140px; border-bottom: 1px solid #9CA3AF; padding: 0 4px">
+<sc-for list="{{hist}}" as="h" hint-placeholder-count="14">
+<div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%">
+<div style="width: 100%; height: {{h.px}}; background: {{h.color}}; border-radius: 2px 2px 0 0"></div>
+</div>
+</sc-for>
+</div>
+<div style="display: flex; justify-content: space-between; color: #4B5563; font-size: 12px"><span>0 ms</span><span>10 ms</span><span>20 ms</span><span>Fenster-Ende 30 ms</span></div>
+<div style="color: #374151">Balkenbreite 2 ms ≥ U – feinere Klassen wären mit diesem Adapter nicht auflösbar und werden gesperrt.</div>
+</div>
+
+<div style="flex: 1 1 320px; min-width: 0; background: #FFFFFF; border: 1px solid #D1D5DB; border-radius: 4px; padding: 10px; display: flex; flex-direction: column; gap: 6px">
+<strong>Adapter-Selbsttest (Port A)</strong>
+<sc-for list="{{selftest}}" as="s" hint-placeholder-count="7">
+<div style="display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px solid #F3F4F6; padding: 3px 0"><span style="color: #4B5563">{{s.k}}</span><span style="font-weight: 500; text-align: right">{{s.v}}</span></div>
+</sc-for>
+<div style="padding: 8px; border: 1px solid #B45309; color: #92400E; border-radius: 4px; background: #FFFBEB">Tipp: Latenztimer steht bereits auf 1 ms. Bei 16 ms (Werkseinstellung) läge U bei etwa ±9 ms.</div>
+</div>
+</div>
+
+<div style="margin: 0 8px 8px; background: #FFFFFF; border: 1px solid #D1D5DB; border-radius: 4px; flex: 1 1 auto">
+<div style="display: flex; gap: 8px; align-items: center; padding: 6px 10px; border-bottom: 1px solid #E5E7EB; flex-wrap: wrap">
+<strong>Busmonitor</strong>
+<span style="padding: 3px 8px; border-radius: 12px; background: #DBEAFE; color: #1E3A8A">alle</span>
+<span style="padding: 3px 8px; border-radius: 12px; background: #F3F4F6">nur Fehler</span>
+<span style="padding: 3px 8px; border-radius: 12px; background: #F3F4F6">nur fremde</span>
+<span style="padding: 3px 8px; border-radius: 12px; background: #F3F4F6">Adresse 98h</span>
+<span style="margin-left: auto; color: #4B5563">Zeiten relativ zum Laufbeginn · alle ± 1,1 ms (k=2)</span>
+</div>
+<div style="overflow-x: auto">
+<table style="width: 100%; border-collapse: collapse; min-width: 900px; font-size: 12px">
+<thead>
+<tr style="background: #F3F4F6; text-align: left">
+<th style="padding: 5px 8px; font-weight: 600">Zeit</th>
+<th style="padding: 5px 8px; font-weight: 600">Port</th>
+<th style="padding: 5px 8px; font-weight: 600">Von → An</th>
+<th style="padding: 5px 8px; font-weight: 600">Rohbytes</th>
+<th style="padding: 5px 8px; font-weight: 600">Dekodiert</th>
+<th style="padding: 5px 8px; font-weight: 600">Bewertung</th>
+</tr>
+</thead>
+<tbody>
+<sc-for list="{{frames}}" as="f" hint-placeholder-count="8">
+<tr>
+<td style="padding: 4px 8px; border-top: 1px solid #F3F4F6; font-family: 'IBM Plex Mono', monospace">{{f.t}}</td>
+<td style="padding: 4px 8px; border-top: 1px solid #F3F4F6">{{f.p}}</td>
+<td style="padding: 4px 8px; border-top: 1px solid #F3F4F6; font-family: 'IBM Plex Mono', monospace">{{f.a}}</td>
+<td style="padding: 4px 8px; border-top: 1px solid #F3F4F6; font-family: 'IBM Plex Mono', monospace">{{f.raw}}</td>
+<td style="padding: 4px 8px; border-top: 1px solid #F3F4F6">{{f.dec}}</td>
+<td style="padding: 4px 8px; border-top: 1px solid #F3F4F6"><span style="{{f.style}}">{{f.ev}}</span></td>
+</tr>
+</sc-for>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+var pill = 'padding: 1px 6px; border-radius: 3px; font-weight: 500; ';
+var ok = pill + 'background: #DCFCE7; color: #14532D';
+var info = pill + 'background: #F3F4F6; color: #374151';
+var bad = pill + 'background: #FEE2E2; color: #7F1D1D';
+var counts = [0, 1, 4, 11, 19, 26, 18, 9, 4, 2, 1, 0, 0, 1, 0];
+var max = 26;
+return {
+tiles: [
+{ label: 'Latenz Median (FB)', value: '12,4 ms', sub: '± 1,1 ms (k=2)', color: '#1F2937' },
+{ label: 'Latenz P95', value: '17,9 ms', sub: '± 1,1 ms (k=2)', color: '#1F2937' },
+{ label: 'Antwortquote', value: '99,7 %', sub: '110 von 111 Erwartungen', color: '#15803D' },
+{ label: 'Kollisionen', value: '1', sub: 'Echo ≠ gesendet, 1× wiederholt', color: '#B45309' },
+{ label: 'Fremde Rahmen', value: '214', sub: 'meist E1h (S-Meter)', color: '#1F2937' },
+{ label: 'Verworfene Rahmen', value: '0', sub: 'ohne FD / zu kurz', color: '#15803D' }
+],
+hist: counts.map(function (c, i) {
+return { px: Math.round(c / max * 130) + 'px', color: i === 13 ? '#B45309' : '#1D4ED8' };
+}),
+selftest: [
+{ k: 'Adapter', v: 'FTDI FT232R (USB-ID erkannt)' },
+{ k: 'Anschlussart', v: 'Bus-Adapter, Echo vorhanden' },
+{ k: 'Latenztimer', v: '1 ms' },
+{ k: 'feste Latenz (min.)', v: '1,9 ms' },
+{ k: 'Jitter (Typ A, s)', v: '0,31 ms' },
+{ k: 'Quantisierung (Typ B)', v: '1 ms Raster → 0,29 ms' },
+{ k: 'U (k=2)', v: '± 1,1 ms' },
+{ k: 'Wiederholung', v: 'alle 30 min, zuletzt 17:41' }
+],
+frames: [
+{ t: '+72,118', p: 'A', a: 'E0 → 98', raw: 'FE FE 98 E0 05 00 40 07 14 00 FD', dec: 'Frequenz setzen 14,074 MHz', ev: 'gesendet, Echo ok', style: ok },
+{ t: '+72,131', p: 'A', a: '98 → E0', raw: 'FE FE E0 98 FB FD', dec: 'OK', ev: 'erwartet · 13 ms', style: ok },
+{ t: '+72,149', p: 'A', a: '98 → 00', raw: 'FE FE 00 98 00 00 40 07 14 00 FD', dec: 'Rundruf Frequenz', ev: 'erwartet · 31 ms', style: ok },
+{ t: '+72,201', p: 'A', a: '98 → E1', raw: 'FE FE E1 98 15 02 01 20 FD', dec: 'S-Meter 0120', ev: 'fremd, gezählt', style: info },
+{ t: '+72,377', p: 'A', a: 'E0 → 98', raw: 'FE FE 98 E0 05 …', dec: '–', ev: 'Kollision, FC gesendet', style: bad },
+{ t: '+72,401', p: 'A', a: 'E0 → 98', raw: 'FE FE 98 E0 05 00 40 07 14 00 FD', dec: 'Wiederholung 1/3', ev: 'gesendet, Echo ok', style: ok },
+{ t: '+72,415', p: 'A', a: '98 → E0', raw: 'FE FE E0 98 FB FD', dec: 'OK', ev: 'erwartet · 14 ms', style: ok }
+]
+};
+}
+}
+</script>
+</body>
+</html>

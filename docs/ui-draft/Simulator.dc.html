@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Simulator</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#1D4ED8}a:hover{color:#1E3A8A}
+</style>
+</helmet>
+<div style="min-height: 900px; display: flex; flex-direction: column; background: #E5E7EB; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 13px; color: #1F2937">
+
+<div style="display: flex; align-items: center; gap: 12px; padding: 6px 12px; background: #1F2937; color: #F9FAFB; flex-wrap: wrap">
+<span style="font-weight: 600">civ-tester4icom 0.1 – Simulator an Port A (COM5, 19200 Bd)</span>
+</div>
+
+<div style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: #FFFFFF; border-bottom: 1px solid #D1D5DB; flex-wrap: wrap">
+<button style="min-height: 36px; padding: 0 14px; border: 1px solid #15803D; background: #15803D; color: #FFFFFF; border-radius: 4px; font: inherit; font-weight: 600">▶ Simulation starten</button>
+<button style="min-height: 36px; padding: 0 12px; border: 1px solid #1D4ED8; color: #1D4ED8; background: #FFFFFF; border-radius: 4px; font: inherit">+ Gerät simulieren</button>
+<button style="min-height: 36px; padding: 0 12px; border: 1px solid #1D4ED8; color: #1D4ED8; background: #FFFFFF; border-radius: 4px; font: inherit">+ Abfrage-Last</button>
+<span style="margin-left: auto; padding: 6px 10px; border-radius: 4px; background: #FFFBEB; color: #92400E; border: 1px solid #B45309">Nur an Bus-Adaptern mit Open-Collector-Ausgang, nie gegen ein echtes Gerät mit gleicher Adresse</span>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 8px; padding: 8px; flex: 1 1 auto">
+
+<div style="flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 8px">
+<sc-for list="{{devices}}" as="d" hint-placeholder-count="3">
+<div style="{{d.cardStyle}}">
+<div style="display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap"><strong>{{d.name}}</strong><span style="font-family: 'IBM Plex Mono', monospace">{{d.adr}}</span></div>
+<div style="color: #374151">{{d.kind}}</div>
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #4B5563">{{d.state}}</div>
+</div>
+</sc-for>
+<div style="padding: 10px; background: #FFFFFF; border: 1px dashed #9CA3AF; border-radius: 4px; color: #374151">Szenario speichern als „Radio + Abfrage-Last.civsim“ – lässt sich in Abläufen als Hintergrundlast starten.</div>
+</div>
+
+<div style="flex: 999 1 520px; min-width: 0; background: #FFFFFF; border: 1px solid #D1D5DB; border-radius: 4px; padding: 12px; display: flex; flex-direction: column; gap: 12px">
+<div style="font-weight: 600; font-size: 15px">IC-7610 (simuliert) · 98h</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="font-weight: 600">Zustand</div>
+<label style="display: flex; flex-direction: column; gap: 3px">Frequenz <input value="14,074 000 MHz" style="min-height: 32px; padding: 0 8px; border: 1px solid #9CA3AF; border-radius: 4px; font: inherit"></label>
+<label style="display: flex; flex-direction: column; gap: 3px">Betriebsart <select style="min-height: 32px; border: 1px solid #9CA3AF; border-radius: 4px; font: inherit"><option>USB, FIL1</option></select></label>
+<label style="display: flex; flex-direction: column; gap: 3px">Antenne <select style="min-height: 32px; border: 1px solid #9CA3AF; border-radius: 4px; font: inherit"><option>ANT1, RX-ANT aus</option></select></label>
+<label style="display: flex; align-items: center; gap: 6px"><input type="checkbox" checked> Transceive EIN (Rundrufe an 00)</label>
+<label style="display: flex; align-items: center; gap: 6px"><input type="checkbox"> Gerät ausgeschaltet (wartet auf Präambel + 18 01)</label>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="font-weight: 600">Antwortverhalten</div>
+<label style="display: flex; flex-direction: column; gap: 3px">Antwortverzögerung <select style="min-height: 32px; border: 1px solid #9CA3AF; border-radius: 4px; font: inherit"><option>gleichverteilt 8–15 ms</option><option>fest</option></select></label>
+<label style="display: flex; flex-direction: column; gap: 3px">Unbekannte Befehle <select style="min-height: 32px; border: 1px solid #9CA3AF; border-radius: 4px; font: inherit"><option>mit NG (FA) beantworten</option><option>ignorieren</option></select></label>
+<label style="display: flex; flex-direction: column; gap: 3px">Bediener-Ereignis <select style="min-height: 32px; border: 1px solid #9CA3AF; border-radius: 4px; font: inherit"><option>VFO alle 2 s um 1 kHz drehen</option><option>aus</option></select></label>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="font-weight: 600">Fehlerinjektion</div>
+<sc-for list="{{faults}}" as="f" hint-placeholder-count="7">
+<label style="display: flex; justify-content: space-between; align-items: center; gap: 8px"><span>{{f.name}}</span><input value="{{f.v}}" style="width: 70px; min-height: 30px; padding: 0 6px; border: 1px solid #9CA3AF; border-radius: 4px; font: inherit; text-align: right"></label>
+</sc-for>
+</div>
+</div>
+
+<div style="border-top: 1px solid #E5E7EB; padding-top: 10px; display: flex; flex-direction: column; gap: 6px">
+<div style="font-weight: 600">Bus-Eignungstest (zwei Ports: A sendet, B empfängt am anderen Leitungsende)</div>
+<div style="overflow-x: auto">
+<table style="border-collapse: collapse; min-width: 560px; width: 100%">
+<thead><tr style="background: #F3F4F6; text-align: left">
+<th style="padding: 5px 8px; font-weight: 600">Baudrate</th><th style="padding: 5px 8px; font-weight: 600">Rahmen</th><th style="padding: 5px 8px; font-weight: 600">fehlerhaft</th><th style="padding: 5px 8px; font-weight: 600">Bewertung</th>
+</tr></thead>
+<tbody>
+<sc-for list="{{baud}}" as="b" hint-placeholder-count="6">
+<tr><td style="padding: 4px 8px; border-top: 1px solid #F3F4F6">{{b.bd}}</td><td style="padding: 4px 8px; border-top: 1px solid #F3F4F6">{{b.n}}</td><td style="padding: 4px 8px; border-top: 1px solid #F3F4F6">{{b.err}}</td><td style="padding: 4px 8px; border-top: 1px solid #F3F4F6"><span style="{{b.style}}">{{b.ev}}</span></td></tr>
+</sc-for>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+var card = 'background: #FFFFFF; border: 1px solid #D1D5DB; border-radius: 4px; padding: 10px; display: flex; flex-direction: column; gap: 4px';
+var pill = 'padding: 1px 6px; border-radius: 3px; font-weight: 500; ';
+return {
+devices: [
+{ name: 'IC-7610 (simuliert)', adr: '98h', kind: 'Geräteprofil IC-7610 · antwortet laut Katalog', state: '14,074 000 MHz · USB · ANT1 · Transceive EIN', cardStyle: card + '; outline: 2px solid #1D4ED8; outline-offset: -2px' },
+{ name: 'Abfrage-Last 1', adr: 'E1h', kind: 'fragt 98h alle 100 ms: 15 02 (S-Meter)', state: 'Kollisionserkennung: ja · Jitter ±5 ms', cardStyle: card },
+{ name: 'Abfrage-Last 2', adr: 'E2h', kind: 'fragt 98h alle 1,1 s: 1C 03, 03, 12', state: 'Kollisionserkennung: ja', cardStyle: card },
+{ name: 'Störer ohne Kollisionserkennung', adr: 'E3h', kind: 'sendet blind alle 250 ms', state: 'deaktiviert', cardStyle: card + '; opacity: 0.75' }
+],
+faults: [
+{ name: 'NG statt OK', v: '1 %' },
+{ name: 'keine Antwort', v: '0,5 %' },
+{ name: 'Antwort verspätet (+50 ms)', v: '0 %' },
+{ name: 'Rahmen ohne FD', v: '0 %' },
+{ name: 'einzelnes FE / Müllbyte', v: '0 %' },
+{ name: 'Lücke im Rahmen (20 ms)', v: '0 %' },
+{ name: 'absichtliche Kollision', v: '0 %' }
+],
+baud: [
+{ bd: '9600', n: '10 000', err: '0', ev: 'geeignet', style: pill + 'background: #DCFCE7; color: #14532D' },
+{ bd: '19200', n: '10 000', err: '3', ev: 'grenzwertig', style: pill + 'background: #FEF3C7; color: #78350F' },
+{ bd: '38400', n: '10 000', err: '412', ev: 'ungeeignet', style: pill + 'background: #FEE2E2; color: #7F1D1D' },
+{ bd: '19200 −2 %', n: '5 000', err: '9', ev: 'Toleranz knapp', style: pill + 'background: #FEF3C7; color: #78350F' }
+]
+};
+}
+}
+</script>
+</body>
+</html>

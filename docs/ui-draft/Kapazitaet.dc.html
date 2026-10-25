@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Bus-Kapazitätstest</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#1D4ED8}a:hover{color:#1E3A8A}
+</style>
+</helmet>
+<div style="min-height: 900px; display: flex; flex-direction: column; background: #E5E7EB; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 13px; color: #1F2937">
+
+<div style="display: flex; align-items: center; gap: 12px; padding: 6px 12px; background: #1F2937; color: #F9FAFB; flex-wrap: wrap">
+<span style="font-weight: 600">civ-tester4icom 0.1 – Bus-Kapazitätstest (mitgelieferter Ablauf, anpassbar)</span>
+</div>
+
+<div style="display: flex; align-items: center; gap: 12px; padding: 8px 12px; background: #FFFFFF; border-bottom: 1px solid #D1D5DB; flex-wrap: wrap">
+<span>Ziel <strong style="font-family: 'IBM Plex Mono', monospace">98h</strong></span>
+<span>Abfrage <strong style="font-family: 'IBM Plex Mono', monospace">03</strong> (wählbar)</span>
+<span>Baudrate <strong>19200</strong></span>
+<span>Beobachtung <strong>10 min</strong></span>
+<span>Intervall-Suche <strong>500 → 50 ms</strong>, je 200 Abfragen</span>
+<span style="margin-left: auto; padding: 6px 10px; border-radius: 4px; background: #DBEAFE; color: #1E3A8A; font-weight: 500">U (k=2): ±1,1 ms</span>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 8px; padding: 8px">
+
+<div style="flex: 1 1 340px; min-width: 0; background: #FFFFFF; border: 1px solid #D1D5DB; border-radius: 4px; padding: 12px; display: flex; flex-direction: column; gap: 6px">
+<div style="font-weight: 600; font-size: 15px">Theorie bei 19200 Bd</div>
+<sc-for list="{{theory}}" as="r" hint-placeholder-count="5">
+<div style="display: flex; justify-content: space-between; border-bottom: 1px solid #F3F4F6; padding: 3px 0"><span style="color: #4B5563">{{r.k}}</span><span style="font-weight: 500">{{r.v}}</span></div>
+</sc-for>
+<div style="color: #374151">Nur Leitungszeit. Die Verarbeitungszeit im Gerät ist meist größer und wird deshalb gemessen, nicht angenommen.</div>
+</div>
+
+<div style="flex: 1 1 340px; min-width: 0; background: #FFFFFF; border: 1px solid #D1D5DB; border-radius: 4px; padding: 12px; display: flex; flex-direction: column; gap: 6px">
+<div style="font-weight: 600; font-size: 15px">Phase 1 · passiv beobachten</div>
+<sc-for list="{{passive}}" as="r" hint-placeholder-count="5">
+<div style="display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px solid #F3F4F6; padding: 3px 0"><span style="color: #4B5563">{{r.k}}</span><span style="font-weight: 500; text-align: right">{{r.v}}</span></div>
+</sc-for>
+<div style="padding: 8px; border: 1px solid #B45309; color: #92400E; border-radius: 4px; background: #FFFBEB">E3h sendet ohne erkennbare Kollisionsvermeidung – Ergebnis gilt nur, solange dieser Teilnehmer sich gleich verhält.</div>
+</div>
+
+<div style="flex: 2 1 520px; min-width: 0; background: #FFFFFF; border: 1px solid #D1D5DB; border-radius: 4px; padding: 12px; display: flex; flex-direction: column; gap: 8px">
+<div style="font-weight: 600; font-size: 15px">Phase 2 · aktiv: Antwortquote je Abfrageintervall</div>
+<div style="display: flex; align-items: flex-end; gap: 10px; height: 200px; border-bottom: 1px solid #9CA3AF; border-left: 1px solid #9CA3AF; padding: 0 10px">
+<sc-for list="{{bars}}" as="b" hint-placeholder-count="8">
+<div style="flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 3px">
+<span style="font-size: 11px; color: #374151">{{b.q}}</span>
+<div style="width: 100%; height: {{b.px}}; background: {{b.color}}; border-radius: 2px 2px 0 0"></div>
+</div>
+</sc-for>
+</div>
+<div style="display: flex; gap: 10px; padding: 0 10px">
+<sc-for list="{{bars}}" as="b" hint-placeholder-count="8">
+<span style="flex: 1; text-align: center; color: #4B5563; font-size: 12px">{{b.iv}}</span>
+</sc-for>
+</div>
+<div style="display: flex; gap: 16px; flex-wrap: wrap; color: #374151">
+<span><span style="display: inline-block; width: 10px; height: 10px; background: #1D4ED8"></span> stabil</span>
+<span><span style="display: inline-block; width: 10px; height: 10px; background: #B45309"></span> Knickpunkt</span>
+<span><span style="display: inline-block; width: 10px; height: 10px; background: #9CA3AF"></span> überlastet</span>
+<span>Kurve zusätzlich: Latenz P95 und Kollisionen je Intervall (umschaltbar)</span>
+</div>
+</div>
+</div>
+
+<div style="margin: 0 8px 8px; background: #FFFFFF; border: 2px solid #15803D; border-radius: 4px; padding: 14px; display: flex; flex-wrap: wrap; gap: 24px; align-items: center">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="color: #4B5563">Empfohlenes Abfrageintervall</span>
+<span style="font-size: 28px; font-weight: 600; color: #15803D">≥ 250 ms</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="color: #4B5563">Knickpunkt gemessen</span>
+<span style="font-size: 22px; font-weight: 600">150 ms</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="color: #4B5563">Empfohlene Phasenlage</span>
+<span style="font-size: 22px; font-weight: 600">+40 ms nach E1h</span>
+</div>
+<div style="flex: 1 1 320px; color: #374151">Sicherheitsabstand = Faktor 1,5 auf den Knickpunkt plus 2 × U. Grundlage: 10 min Beobachtung, 1 600 aktive Abfragen. Bei geänderter Busbelegung (neues Gerät, andere Baudrate) Test wiederholen.</div>
+<button style="min-height: 36px; padding: 0 12px; border: 1px solid #9CA3AF; background: #FFFFFF; border-radius: 4px; font: inherit">Bericht erzeugen</button>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+var data = [
+{ iv: '500', q: 100 }, { iv: '400', q: 100 }, { iv: '300', q: 100 }, { iv: '250', q: 99.9 },
+{ iv: '200', q: 99.5 }, { iv: '150', q: 98.1 }, { iv: '100', q: 91.0 }, { iv: '50 ms', q: 72.5 }
+];
+return {
+theory: [
+{ k: '1 Byte (10 Bit)', v: '0,52 ms' },
+{ k: 'Abfrage 03 (6 Byte)', v: '3,1 ms' },
+{ k: 'Antwort 03 (11 Byte)', v: '5,7 ms' },
+{ k: 'Rundruf 00 (11 Byte)', v: '5,7 ms' },
+{ k: 'Leitungsgrenze Abfrage+Antwort', v: 'ca. 113 / s' }
+],
+passive: [
+{ k: 'Busauslastung', v: '23 %' },
+{ k: 'Fremd-Master E1h', v: 'alle 100 ms ±3 ms, 15 02' },
+{ k: 'Fremd-Master E2h', v: 'alle 1,1 s, 1C 03 / 03 / 12' },
+{ k: 'Fremd-Sender E3h', v: 'alle 250 ms, ohne Kollisionsvermeidung' },
+{ k: 'Rundrufe 98h → 00', v: '0,8 / s' },
+{ k: 'größte freie Lücke (P50)', v: '61 ms ±1,1' }
+],
+bars: data.map(function (d, i) {
+var px = Math.round((d.q - 60) / 40 * 170) + 'px';
+var color = d.iv === '150' ? '#B45309' : (d.q < 98 ? '#9CA3AF' : '#1D4ED8');
+return { iv: d.iv, q: String(d.q).replace('.', ',') + ' %', px: px, color: color };
+})
+};
+}
+}
+</script>
+</body>
+</html>
