@@ -4,6 +4,8 @@
 
 Status 2026-10-25 · approved. This English text is a translation of the approved German original ([SPEZIFIKATION.md](SPEZIFIKATION.md)); where the two differ, the German version prevails.
 
+**Changes after approval (2026-10-25, accepted by the user):** three-level decision rule with uniform terms (section 4); self-test pattern without `FE`/`FD`/`FC` (section 4); transmit lock from package 8, release in package 15 (sections 7 and 14); run control (section 14).
+
 ## 1 Purpose and scope
 
 civ-tester4icom is an open measurement and test program for Icom CI-V buses and equipment with a CI-V interface, intended as a tool for radio amateurs and developers of home-built accessories. Unlike the earlier CI-V Prüfer, it contains no hard-coded test sequences: users assemble their own sequences in the user interface, save them and run them. Bundled sequences are templates only.
@@ -106,7 +108,7 @@ Unsolicited frames (transceive broadcasts to 00, foreign masters) are always rec
 
 **Adapter self-test** (before every timing measurement, repeated every 30 min during long-term runs, changeable)
 
-1. Send a few hundred bytes, measure the time until the echo.
+1. Send a few hundred bytes, measure the time until the echo. The pattern never contains the bytes `FE`, `FD` or `FC`, so no device can form a frame from it and no ongoing transmission is disturbed; it is sent only when the bus is idle, under the same rules as any send step. A unit test checks the pattern.
 2. Smallest value = fixed latency; spread = jitter (type A).
 3. Clustering of reception times on a grid = quantisation, e.g. FTDI latency timer (type B, rectangular distribution).
 4. Combined uncertainty, **expanded with k = 2** according to GUM (JCGM 100).
@@ -116,7 +118,15 @@ Without echo (direct connection) only an upper bound is estimated from the sprea
 
 **Presentation:** "Latency 12.4 ms ± 1.1 ms (k = 2)". If a value is smaller than its uncertainty, "not resolvable" is shown. Histogram bins are never finer than U.
 
-**Pass / fail** according to ILAC-G8: "pass" only if the measured value plus U lies within the limit, otherwise "undecidable".
+**Decision rule** according to ILAC-G8:09/2019, U = expanded uncertainty (k = 2), x = measured value, LL/UL = lower/upper limit:
+
+| Limit | met | not met | undecidable |
+| --- | --- | --- | --- |
+| upper limit UL only | x + U ≤ UL | x − U > UL | otherwise |
+| lower limit LL only | x − U ≥ LL | x + U < LL | otherwise |
+| window [LL, UL] (e.g. response window earliest/latest) | x − U ≥ LL and x + U ≤ UL | x + U < LL or x − U > UL | otherwise |
+
+Equality at the limit counts as "met". A result based on an estimate (direct connection) keeps the label "estimate, not measured". Error rates do not fall under this rule but under the rule of three. Throughout the program, reports and manual the terms "met", "not met", "undecidable" (German „erfüllt“, „nicht erfüllt“, „nicht entscheidbar“) are used uniformly.
 
 **Error rates** by the rule of three: 0 errors in n frames demonstrate an error rate below 3/n at 95 %. The program derives the required test duration from this (example: below 0.1 % requires 3000 error-free frames).
 
@@ -199,6 +209,7 @@ The transmit lock is always active and is never saved; transmission happens only
 
 - Raw bytes and user-defined commands are checked against the catalog before sending; unknown commands to transmit-capable devices are treated as "possibly RF-triggering".
 - Fault injection and the conformance test never generate patterns that could form a valid transmit command while the lock is active.
+- All send paths pass through one single check point in the I/O path. This transmit lock is built in package 8 without any release option; release, emergency stop and watchdogs follow in package 15 and build on it. Before package 8 the program sends only the self-test pattern and `FC`.
 
 **Release**
 
@@ -462,7 +473,7 @@ The repository `civ-tester4icom` becomes public after the first commit with LICE
 - [x] Bus recordings as test data (private)
 - [ ] Date for the start of construction
 
-**Sources** (private in `civ-werkstatt/doku/referenz`): Icom CI-V Reference Manual v3.2 (2002); CI-V Reference Guides IC-7610 (2025), IC-7300MK2, IC-7760 (2025), IC-9700, IC-705 (2023), IC-905, IC-R8600, IC-R15, IC-2730, IC-PW2, ID-50, ID-52, ID-52 PLUS, ID-5200; service manuals IC-7610 (2017) and IC-9700 (2019); IC-705 Bluetooth/WLAN specification; Advanced Manuals IC-705, IC-R30, ID-4100, ID-5200, ID-52, ID-52 PLUS; IARU Region 1 Recommendation R.1; JCGM 100 (GUM); ILAC-G8.
+**Sources** (private in `civ-werkstatt/doku/referenz`): Icom CI-V Reference Manual v3.2 (2002); CI-V Reference Guides IC-7610 (2025), IC-7300MK2, IC-7760 (2025), IC-9700, IC-705 (2023), IC-905, IC-R8600, IC-R15, IC-2730, IC-PW2, ID-50, ID-52, ID-52 PLUS, ID-5200; service manuals IC-7610 (2017) and IC-9700 (2019); IC-705 Bluetooth/WLAN specification; Advanced Manuals IC-705, IC-R30, ID-4100, ID-5200, ID-52, ID-52 PLUS; IARU Region 1 Recommendation R.1; JCGM 100 (GUM); ILAC-G8:09/2019.
 
 ## 14 Build plan in nightly runs
 
@@ -492,14 +503,14 @@ Construction is split into 26 packages, one package per run, on Mondays, Wednesd
 | 2 | 5 | Adapter self-test, measurement uncertainty |  |
 | 2 | 6 | Bus monitor in the UI, recording | ⏸ Intermediate test with the Pico (approx. 15 min) |
 | 3 | 7 | Corrections from the intermediate test |  |
-| 3 | 8 | Catalog format, data types, decoder, base profile |  |
+| 3 | 8 | Catalog format, data types, decoder, base profile, central transmit lock (no release) |  |
 | 3 | 9 | IC-7610 profile part 1 |  |
 | 4 | 10 | IC-7610 profile part 2, direct console |  |
 | 4 | 11 | IC-9700 profile |  |
 | 4 | 12 | Sequence engine: send, expect, wait, variables |  |
 | 5 | 13 | Sequence engine: loops, sub-sequences, background, clean-up block |  |
 | 5 | 14 | Sequence editor (UI) |  |
-| 5 | 15 | Transmit lock, release, emergency stop, watchdogs |  |
+| 5 | 15 | Release, emergency stop, watchdogs (building on the transmit lock from package 8) |  |
 | 6 | 16 | Snapshots, restore, report and ZIP | ⏸ Test pre-release on the IC-7610 |
 | 6 | 17 | Corrections from the pre-release test |  |
 | 6 | 18 | TCP, Bluetooth SPP, connection types, command line |  |

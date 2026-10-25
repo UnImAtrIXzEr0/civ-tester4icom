@@ -4,6 +4,8 @@
 
 Stand 25.10.2026 · freigegeben. Dies ist die freigegebene Originalfassung; die englische Fassung ist eine Übersetzung. Bei Abweichungen gilt diese deutsche Fassung.
 
+**Änderungen nach der Freigabe (25.10.2026, vom Anwender angenommen):** Entscheidungsregel dreistufig mit einheitlichen Begriffen (Abschnitt 4); Selbsttest-Muster ohne `FE`/`FD`/`FC` (Abschnitt 4); Sendesperre ab Paket 8, Freigabe in Paket 15 (Abschnitt 7 und 14); Laufsteuerung (Abschnitt 14).
+
 ## 1 Zweck und Abgrenzung
 
 civ-tester4icom ist ein offenes Mess- und Testprogramm für Icom-CI-V-Busse und Geräte mit CI-V-Schnittstelle, gedacht als Werkzeug für Funkamateure und Entwickler von Eigenbau-Zubehör. Anders als der CI-V Prüfer enthält es keine fest eingebauten Messabläufe: Der Anwender stellt seine Abläufe in der Oberfläche selbst zusammen, speichert sie und führt sie aus. Mitgelieferte Abläufe sind nur Vorlagen.
@@ -106,7 +108,7 @@ Unaufgeforderte Rahmen (Transceive-Rundrufe an 00, fremde Master) werden immer m
 
 **Adapter-Selbsttest** (vor jeder Zeitmessung, während Langzeitläufen alle 30 min wiederholt, änderbar)
 
-1. Einige hundert Bytes senden, Zeit bis zum Echo messen.
+1. Einige hundert Bytes senden, Zeit bis zum Echo messen. Das Muster enthält nie die Bytes `FE`, `FD` und `FC`, damit kein Gerät daraus einen Rahmen bilden kann und keine laufende Übertragung gestört wird; gesendet wird nur bei freiem Bus nach denselben Regeln wie bei jedem Sendeschritt. Ein Unit-Test prüft das Muster.
 2. Kleinster Wert = feste Latenz; Streuung = Jitter (Typ A).
 3. Häufung der Empfangszeitpunkte in Rastern = Quantisierung, z. B. FTDI-Latenztimer (Typ B, Rechteckverteilung).
 4. Kombinierte Unsicherheit, **erweitert mit k = 2** nach GUM (JCGM 100).
@@ -116,7 +118,15 @@ Ohne Echo (Direktverbindung) wird nur eine Obergrenze aus der Streuung der Antwo
 
 **Darstellung:** „Latenz 12,4 ms ± 1,1 ms (k = 2)“. Ist ein Wert kleiner als seine Unsicherheit, erscheint „nicht auflösbar“. Histogrammklassen sind nie feiner als U.
 
-**Bestanden / nicht bestanden** nach ILAC-G8: „bestanden“ nur, wenn Messwert plus U innerhalb der Grenze liegt, sonst „nicht entscheidbar“.
+**Entscheidungsregel** nach ILAC-G8:09/2019, U = erweiterte Unsicherheit (k = 2), x = Messwert, UG/OG = Unter-/Obergrenze:
+
+| Grenze | erfüllt | nicht erfüllt | nicht entscheidbar |
+| --- | --- | --- | --- |
+| nur Obergrenze OG | x + U ≤ OG | x − U > OG | sonst |
+| nur Untergrenze UG | x − U ≥ UG | x + U < UG | sonst |
+| Fenster [UG, OG] (z. B. Antwortfenster frühestens/spätestens) | x − U ≥ UG und x + U ≤ OG | x + U < UG oder x − U > OG | sonst |
+
+Gleichheit auf der Grenze gilt als „erfüllt“. Beruht ein Ergebnis auf einer Schätzung (Direktverbindung), behält es den Vermerk „Schätzung, nicht gemessen“. Fehlerraten fallen nicht unter diese Regel, sondern unter die Dreierregel. Im ganzen Programm, in Berichten und in der Anleitung gelten einheitlich die Begriffe „erfüllt“, „nicht erfüllt“, „nicht entscheidbar“ (englisch „met“, „not met“, „undecidable“).
 
 **Fehlerraten** nach der Dreierregel: 0 Fehler in n Rahmen belegen eine Fehlerrate unter 3/n bei 95 %. Das Programm rechnet daraus die nötige Testdauer (Beispiel: unter 0,1 % braucht 3000 fehlerfreie Rahmen).
 
@@ -199,6 +209,7 @@ Die Sendersperre ist immer aktiv und wird nie gespeichert; gesendet wird nur nac
 
 - Rohbytes und eigene Befehle werden vor dem Senden gegen den Katalog geprüft; unbekannte Befehle an sendefähige Geräte gelten als „möglicherweise HF-auslösend“.
 - Fehlerinjektion und Konformitätstest erzeugen bei aktiver Sperre nie Muster, die einen gültigen Sendebefehl ergeben könnten.
+- Alle Sendewege laufen durch eine einzige Prüfstelle im Ein-/Ausgabe-Pfad. Diese Sendesperre wird in Paket 8 ohne jede Freigabemöglichkeit gebaut; Freigabe, Not-Aus und Wächter folgen in Paket 15 und setzen auf ihr auf. Vor Paket 8 sendet das Programm nur das Selbsttest-Muster und `FC`.
 
 **Freigabe**
 
@@ -462,7 +473,7 @@ Das Repo `civ-tester4icom` wird nach dem ersten Commit mit LICENSE, README und .
 - [x] Busmitschnitte als Testdaten (privat)
 - [ ] Termin für den Baubeginn
 
-**Quellen** (privat in `civ-werkstatt/doku/referenz`): Icom CI-V Reference Manual v3.2 (2002); CI-V Reference Guides IC-7610 (2025), IC-7300MK2, IC-7760 (2025), IC-9700, IC-705 (2023), IC-905, IC-R8600, IC-R15, IC-2730, IC-PW2, ID-50, ID-52, ID-52 PLUS, ID-5200; Servicehandbücher IC-7610 (2017) und IC-9700 (2019); IC-705 Bluetooth/WLAN-Spezifikation; Advanced Manuals IC-705, IC-R30, ID-4100, ID-5200, ID-52, ID-52 PLUS; IARU Region 1 Empfehlung R.1; JCGM 100 (GUM); ILAC-G8.
+**Quellen** (privat in `civ-werkstatt/doku/referenz`): Icom CI-V Reference Manual v3.2 (2002); CI-V Reference Guides IC-7610 (2025), IC-7300MK2, IC-7760 (2025), IC-9700, IC-705 (2023), IC-905, IC-R8600, IC-R15, IC-2730, IC-PW2, ID-50, ID-52, ID-52 PLUS, ID-5200; Servicehandbücher IC-7610 (2017) und IC-9700 (2019); IC-705 Bluetooth/WLAN-Spezifikation; Advanced Manuals IC-705, IC-R30, ID-4100, ID-5200, ID-52, ID-52 PLUS; IARU Region 1 Empfehlung R.1; JCGM 100 (GUM); ILAC-G8:09/2019.
 
 ## 14 Bauplan in Nachtläufen
 
@@ -492,14 +503,14 @@ Gebaut wird in 26 Paketen, je ein Paket pro Lauf, montags, mittwochs und freitag
 | 2 | 5 | Adapter-Selbsttest, Messunsicherheit |  |
 | 2 | 6 | Busmonitor in der Oberfläche, Mitschnitt | ⏸ Zwischentest mit dem Pico (ca. 15 min) |
 | 3 | 7 | Korrekturen aus dem Zwischentest |  |
-| 3 | 8 | Katalogformat, Datentypen, Dekoder, Basisprofil |  |
+| 3 | 8 | Katalogformat, Datentypen, Dekoder, Basisprofil, zentrale Sendesperre (ohne Freigabe) |  |
 | 3 | 9 | IC-7610-Profil Teil 1 |  |
 | 4 | 10 | IC-7610-Profil Teil 2, Direktkonsole |  |
 | 4 | 11 | IC-9700-Profil |  |
 | 4 | 12 | Ablauf-Engine: Senden, Erwarten, Warten, Variablen |  |
 | 5 | 13 | Ablauf-Engine: Schleifen, Unterabläufe, Hintergrund, Aufräumblock |  |
 | 5 | 14 | Ablauf-Editor (Oberfläche) |  |
-| 5 | 15 | Sendersperre, Freigabe, Not-Aus, Wächter |  |
+| 5 | 15 | Freigabe, Not-Aus, Wächter (auf der Sendesperre aus Paket 8) |  |
 | 6 | 16 | Schnappschüsse, Wiederherstellung, Bericht und ZIP | ⏸ Vorabversion am IC-7610 testen |
 | 6 | 17 | Korrekturen aus dem Vorabtest |  |
 | 6 | 18 | TCP, Bluetooth-SPP, Anschlussarten, Kommandozeile |  |

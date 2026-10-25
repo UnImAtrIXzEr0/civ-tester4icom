@@ -32,6 +32,7 @@ Englisch zuerst, Deutsch jeweils darunter. Grundlage: Spezifikation Abschnitt 14
 7. A run never: builds beyond a hold point, builds more than one package, creates a release, tag or version 1.0, changes the private repository `civ-werkstatt`, puts manufacturer documents, excerpts from them, recordings, credentials or local paths into this repository.
 8. `civ-werkstatt` may be read as reference (e.g. Reference Guides for device profiles), never written. Nothing is copied from it; profiles use own wording and source references as text only (title, edition, page, no link).
 9. The UI follows `docs/ui-draft/` for layout and interaction; the specification takes precedence (see `docs/ui-draft/README.md`).
+10. Transmit safety: before P08 the program sends only the self-test pattern (never containing `FE`, `FD`, `FC`) and `FC`, no other bytes, no raw bytes. From P08 every send path passes through the central transmit lock, which blocks the levels "triggers RF" and "transmits indirectly" and unknown commands to transmit-capable devices without any release option until P15 adds the release. P08 proves this with unit tests at least for `1C 00 01`, `1C 01 02`, `17`, an unknown command and raw bytes forming one of these.
 
 **DE**
 
@@ -44,6 +45,7 @@ Englisch zuerst, Deutsch jeweils darunter. Grundlage: Spezifikation Abschnitt 14
 7. Ein Lauf tut nie: über einen Haltepunkt hinausbauen, mehr als ein Paket bauen, ein Release, einen Tag oder Version 1.0 erstellen, das private Repo `civ-werkstatt` ändern, Herstellerunterlagen, Auszüge daraus, Mitschnitte, Zugangsdaten oder lokale Pfade in dieses Repo bringen.
 8. `civ-werkstatt` darf als Referenz gelesen werden (z. B. Reference Guides für Geräteprofile), nie beschrieben. Daraus wird nichts kopiert; Profile verwenden eigene Formulierungen und Quellenangaben nur als Text (Titel, Ausgabe, Seite, ohne Link).
 9. Die Oberfläche folgt bei Anordnung und Bedienlogik `docs/ui-draft/`; die Spezifikation hat Vorrang (siehe `docs/ui-draft/README.md`).
+10. Sendesicherheit: Vor P08 sendet das Programm nur das Selbsttest-Muster (nie mit `FE`, `FD`, `FC`) und `FC`, sonst nichts, auch keine Rohbytes. Ab P08 läuft jeder Sendeweg durch die zentrale Sendesperre; sie blockiert die Stufen „löst HF aus“ und „sendet indirekt“ sowie unbekannte Befehle an sendefähige Geräte ohne jede Freigabemöglichkeit, bis P15 die Freigabe ergänzt. P08 belegt das mit Unit-Tests mindestens für `1C 00 01`, `1C 01 02`, `17`, einen unbekannten Befehl und Rohbytes, die einen dieser Befehle ergeben.
 
 ## Packages and hold points / Pakete und Haltepunkte
 
@@ -74,8 +76,8 @@ Week numbers count build weeks from the start, without waiting times. / Wochen a
 
 - [ ] **P07** – Corrections from the intermediate test
   Korrekturen aus dem Zwischentest
-- [ ] **P08** – Catalog format, data types, decoder, base profile
-  Katalogformat, Datentypen, Dekoder, Basisprofil
+- [ ] **P08** – Catalog format, data types, decoder, base profile, central transmit lock (no release)
+  Katalogformat, Datentypen, Dekoder, Basisprofil, zentrale Sendesperre (ohne Freigabe)
 - [ ] **P09** – IC-7610 profile part 1
   IC-7610-Profil Teil 1
 
@@ -95,8 +97,8 @@ Week numbers count build weeks from the start, without waiting times. / Wochen a
 - [ ] **P14** – Sequence editor (UI)
   Ablauf-Editor (Oberfläche)
   UI per / Gestaltung nach `docs/ui-draft/` (Main.dc.html, Katalog.dc.html)
-- [ ] **P15** – Transmit lock, release, emergency stop, watchdogs
-  Sendersperre, Freigabe, Not-Aus, Wächter
+- [ ] **P15** – Release, emergency stop, watchdogs (building on the transmit lock from P08)
+  Freigabe, Not-Aus, Wächter (auf der Sendesperre aus P08)
 
 ### Week 6 / Woche 6
 
